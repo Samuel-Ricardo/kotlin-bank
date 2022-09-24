@@ -1,6 +1,7 @@
 package com.example.bankaccount
 
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -19,7 +20,7 @@ class AccountController(val repository: AccountRepository) {
     @GetMapping
     fun read() = ResponseEntity.ok(repository.findAll());
 
-    @PutMapping
+    @PutMapping("{document}")
     fun update(@PathVariable document: String, @RequestBody account: Account): ResponseEntity<Account>{
         val accountDBOptional = repository.findByDocument(document);
         val toSave = accountDBOptional
@@ -27,4 +28,11 @@ class AccountController(val repository: AccountRepository) {
             .copy(name = account.name, balance = account.balance)
         return ResponseEntity.ok(repository.save(toSave));
     }
+
+    @DeleteMapping("{document}")
+    fun delete(@PathVariable document: String) = repository
+        .findByDocument(document)
+        .ifPresent { repository.delete(it) }
+
+
 }

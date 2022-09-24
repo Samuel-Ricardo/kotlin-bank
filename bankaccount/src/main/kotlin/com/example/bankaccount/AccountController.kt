@@ -16,4 +16,8 @@ class AccountController(val repository: AccountRepository) {
     @PostMapping
     fun create(@RequestBody account: Account) = ResponseEntity.ok(repository.save(account));
 
+    @GetMapping
+    fun read() = ResponseEntity.ok(repository.findAll());
+
+
 }

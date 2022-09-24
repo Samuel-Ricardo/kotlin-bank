@@ -19,5 +19,12 @@ class AccountController(val repository: AccountRepository) {
     @GetMapping
     fun read() = ResponseEntity.ok(repository.findAll());
 
-
+    @PutMapping
+    fun update(@PathVariable document: String, @RequestBody account: Account): ResponseEntity<Account>{
+        val accountDBOptional = repository.findByDocument(document);
+        val toSave = accountDBOptional
+            .orElseThrow { RuntimeException("Account document: $document not found") }
+            .copy(name = account.name, balance = account.balance)
+        return ResponseEntity.ok(repository.save(toSave));
+    }
 }
